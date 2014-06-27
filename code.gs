@@ -28,11 +28,17 @@ function makeTables(data) {
   })
 
   table += '\n|' + underHeaders + '\n'
-  data.map(function(row) {
-    var values = headers.map(function(h) { return row[h] })
-    table += '|' + values.join('|') + '|\n'
+  
+  data.forEach(function(dat, i) {
+    if (i === 0) return // this is a header row
+    dat.forEach(function(d, i) {
+      table += '|' + d 
+      if (i === dat.length) table += '|'
+    })
+    table += '\n'
   })
-  Logger.log(table)
+  
+  getRepo(table)
 };
 
 /**
@@ -52,10 +58,10 @@ function onOpen() {
     name : "Send on Save",
     functionName : "somethingFun"
   }];
-  spreadsheet.addMenu("Script Center Menu", entries);
+  spreadsheet.addMenu("GitHub Markdown Table", entries);
 };
 
-function getRepo() {
+function getRepo(content) {
   
   var key = "XXX"
 
@@ -64,7 +70,7 @@ function getRepo() {
   
   var thebody = {
        "message" : "update table",
-       "content" : Utilities.base64Encode("HELLO")
+       "content" : Utilities.base64Encode(content)
   };
   
   var theheaders = {
@@ -83,7 +89,7 @@ function getRepo() {
   };
     
   Logger.log(options)
-  var url = "https://api.github.com/repos/eviljlord/hello/contents/hello.md";
+  var url = "https://api.github.com/repos/eviljlord/hello/contents/hello2.md";
   var response = UrlFetchApp.fetch(url, options);
   
   Logger.log(response);
